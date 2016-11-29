@@ -1,3 +1,35 @@
-da_platform_homepage:
-    path:     /
-    defaults: { _controller: DAPlatformBundle:Default:index }
+# src/OC/PlatformBundle/Resources/config/routing.yml
+
+da_platform_home:
+    path:      /{page}
+    defaults:
+        _controller: DAPlatformBundle:Advert:index
+        page: 1
+    requirements:
+        page: \d*
+
+da_platform_view:
+    path:      /advert/{id}
+    defaults:
+       _controller: DAPlatformBundle:Advert:view
+    requirements:
+        id: \d+
+
+da_platform_edit:
+    path:      /edit/{id}
+    defaults:
+       _controller: DAPlatformBundle:Advert:edit
+    requirements:
+        id: \d+
+
+da_platform_delete:
+    path:      /edit/{id}
+    defaults:
+       _controller: DAPlatformBundle:Advert:delete
+    requirements:
+        id: \d+
+
+da_platform_add:
+    path:      /add
+    defaults:
+        _controller: DAPlatformBundle:Advert:add
