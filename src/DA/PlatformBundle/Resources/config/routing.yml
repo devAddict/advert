@@ -1,0 +1,3 @@
+da_platform_homepage:
+    path:     /
+    defaults: { _controller: DAPlatformBundle:Default:index }
