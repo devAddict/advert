@@ -3,6 +3,7 @@
 namespace DA\PlatformBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -61,12 +62,17 @@ class AdvertController extends Controller
 
     public function addAction(Request $request)
     {
-        if ($request->isMethod('POST')) {
+        /*if ($request->isMethod('POST')) {
             $request->getSession()->getFlashbag()->add('notice', 'Annonce bien enregistrée');
 
             return $this->redirectToRoute('da_platform_view', array('id' => 5));
         }
-        return $this->render('DAPlatformBundle:Advert:add.html.twig');
+        return $this->render('DAPlatformBundle:Advert:add.html.twig');*/
+        $antispam = $this->container->get('da_platform.antispam');
+        $text = '....';
+        if ($antispam->isSpam($text)) {
+            throw new Exception('Votre message est détecté comme un spam !');
+        }
     }
 
     public function deleteAction()

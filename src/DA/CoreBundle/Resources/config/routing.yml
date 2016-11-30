@@ -1,0 +1,7 @@
+da_core_homepage:
+    path:     /
+    defaults: { _controller: DACoreBundle:Core:index }
+
+da_core_contact:
+    path:     /contact
+    defaults: { _controller: DACoreBundle:Core:contact }

@@ -1,0 +1,40 @@
+body{
+    background-color: #2C3E50;
+    color: #fff;
+    padding-bottom:100px;
+    font-family: 'Roboto Slab', serif;
+}
+
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+h1, h2, h3, h4{
+    color: #ffe4a6;
+}
+
+a{
+    color: #fff;
+}
+
+#nav >li>a {
+    position: relative;
+    display: block;
+    padding: 10px 0 0 5px;
+}
+
+#menu .nav-pills>li>a {
+
+    position: relative;
+    display: block;
+    padding: 10px 0 0 5px;
+}
+
+article h4 > a {
+    color: #357ebd;
+}
+
+article p + p{
+    margin-bottom: 20px;
+}

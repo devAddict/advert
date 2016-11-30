@@ -1,0 +1,22 @@
+{% extends "DACoreBundle::layout.html.twig" %}
+
+{% block title %}Accueil - {{ parent() }}{% endblock %}
+
+{% block body %}
+    <h1>Page d'accueil de notre site</h1>
+
+    <hr>
+    {#<ul>
+        {% for advert in listAdverts %}
+            <li>
+                <a href="{{ path('da_platform_view', {'id': advert.id}) }}">
+                    {{ advert.title }}
+                </a>
+                par {{ advert.author }}
+                le {{ advert.date|date('d/m/Y') }}
+            </li>
+        {% else %}
+            <li>Pas (encore !) d'annonce</li>
+        {% endfor %}
+    </ul>#}
+{% endblock %}

@@ -1,0 +1,108 @@
+{# app/Resources/views/layout.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}DA Plateforme{% endblock %}</title>
+
+    {% block stylesheets %}
+        {# On charge le CSS de bootstrap depuis le site directement #}
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% endblock %}
+</head>
+
+<body>
+<div class="container">
+    <header id="header">
+
+        <!-- #navigation -->
+        <nav id="navigation" class="navbar">
+
+            <!-- .container -->
+            <div class="container">
+
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-collapse-1">
+                        <span class="sr-only">Menu</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <div class="navbar-brand"><img src="{{ asset('img/logo.png') }}" alt="Logo"></div> <!-- site logo -->
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="menu-collapse-1">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ path('da_core_homepage') }}" class="smooth-scroll">Accueil</a></li>
+                        <li><a href="{{ path('da_core_contact') }}" class="smooth-scroll">Contact</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            <!-- .container end -->
+
+        </nav>
+    </header>
+
+    <div class="starter-template">
+        <h1>Ma plateforme d'annonces</h1>
+        <p>
+            Ce projet est propulsé par Symfony,
+            et construit grâce au MOOC OpenClassrooms et SensioLabs.
+        </p>
+        <p>
+            <a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
+                Participer au MOOC »
+            </a>
+        </p>
+    </div>
+
+    <div class="row">
+
+        <div class="col-md-12">
+            {% if app.session.flashBag.has('notice') %}
+                {% for key, message in app.session.flashbag.get('notice')[0] %}
+                    <p class="alert alert-{{ key }} text-center">Message flash : {{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div id="menu" class="col-md-3">
+            <h3>Les annonces</h3>
+            <ul class="nav nav-pills nav-stacked">
+                <li><a href="{{ path('da_platform_home') }}"><i class="fa fa-check"></i> Annonces</a></li>
+                <li><a href="{{ path('da_platform_add') }}"><i class="fa fa-check"></i> Ajouter une annonce</a></li>
+            </ul>
+
+            <h4>Dernières annonces</h4>
+            {{ render(controller("DAPlatformBundle:Advert:menu", {'limit': 3})) }}
+        </div>
+        <div id="content" class="col-md-9">
+            {% block body %}
+
+            {% endblock %}
+        </div>
+    </div>
+
+    <hr>
+
+    <footer class="text-center">
+        <p>The sky's the limit © {{ 'now'|date('Y') }} and beyond.</p>
+    </footer>
+</div>
+
+{% block javascripts %}
+    {# Ajoutez ces lignes JavaScript si vous comptez vous servir des fonctionnalités du bootstrap Twitter #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+{% endblock %}
+
+</body>
+</html>
