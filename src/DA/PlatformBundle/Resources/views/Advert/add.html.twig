@@ -6,7 +6,7 @@
 
 {% block daplatform_body %}
 
-    <h2>Modifier une annonce</h2>
+    <h2>Ajouter une annonce</h2>
 
     {{ include("DAPlatformBundle:Advert:form.html.twig") }}
 
@@ -16,7 +16,7 @@
     </p>
 
     <p>
-        <a href="{{ path('da_platform_view', {'id': advert.id}) }}" class="btn btn-default">
+        <a href="{{ path('da_platform_home') }}" class="btn btn-default">
             <i class="glyphicon glyphicon-chevron-left"></i>
             Retour à l'annonce
         </a>
