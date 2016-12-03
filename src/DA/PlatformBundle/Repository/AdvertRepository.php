@@ -3,6 +3,8 @@
 namespace DA\PlatformBundle\Repository;
 use DateTime;
 use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Tools\Pagination\Paginator;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * AdvertRepository
@@ -12,122 +14,60 @@ use Doctrine\ORM\QueryBuilder;
  */
 class AdvertRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function _findAll()
+    public function _getAvertAll($paginator, $page, $nbPerPage)
     {
-        return $this
+        $query = $this
             ->createQueryBuilder('a')
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function _find($id)
-    {
-        $qb = $this->createQueryBuilder('a');
-
-        $qb
-            ->where('a.id = :id')
-            ->setParameter('id', $id)
-        ;
-
-        return $qb
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    public function _findByAuthorAndDate($author, $year)
-    {
-        $qb = $this->createQueryBuilder('a');
-
-        $qb->where('a.author = :author')
-            ->setParameter('author', $author)
-            ->andWhere('a.date < :year')
-            ->setParameter('year', $year)
+            ->leftJoin('a.image', 'i')
+            ->addSelect('i')
             ->orderBy('a.date', 'DESC')
-        ;
-
-        return $qb
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    public function _findAuthor()
-    {
-        $qb = $this->createQueryBuilder('a');
-
-        // On peut ajouter ce qu'on veut avant
-        $qb
-            ->where('a.author = :author')
-            ->setParameter('author', 'Décilap')
-        ;
-
-        // On applique notre condition sur le QueryBuilder
-        $this->whereCurrentYear($qb);
-
-        // On peut ajouter ce qu'on veut après
-        $qb->orderBy('a.date', 'DESC');
-
-        return $qb
-            ->getQuery()
-            ->getResult()
-            ;
-    }
-
-    public function _whereCurrentYear(QueryBuilder $qb)
-    {
-        $qb
-            ->andWhere('a.date BETWEEN :start AND :end')
-            ->setParameter('start', new DateTime(date('Y').'-01-01'))
-            ->setParameter('end', new DateTime(date('Y').'-12-31'))
-        ;
-    }
-
-    public function _getAdvertWhithApplication()
-    {
-        $qb = $this
-            ->createQueryBuilder('a')
-            ->leftJoin('a.applications', 'app')
-            ->addSelect('app');
-
-        return $qb
             ->getQuery()
             ->getResult();
+
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+
+        return $paginator->paginate(
+            $query,
+            $page,
+            $nbPerPage
+        );
     }
 
-
-    public function _getAdvertWhithCategories(array $categoryNames)
+    public function _getAvert($id)
     {
-        $qb = $this
+       $query = $this
             ->createQueryBuilder('a')
-            ->innerJoin('a.applications', 'c')
-            ->addSelect('c');
-
-        $qb->expr()->in('c.name', $categoryNames);
-        
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
-
-
-    public function _getAdvertWhithApplicationAndCategoryAndSkill($id)
-    {
-        $qb = $this
-            ->createQueryBuilder('a')
-            ->leftJoin('a.applications', 'app')
-            ->addSelect('app')
+            ->leftJoin('a.image', 'i')
+            ->addSelect('i')
             ->leftJoin('a.categories', 'c')
             ->addSelect('c')
-            ->leftJoin('a.advert_skills', 'advs')
-            ->addSelect('advs')
-            ->leftJoin('advs.skill', 's')
-            ->addSelect('s')
-            ->andWhere('a.id = :id')
+            ->leftJoin('a.applications', 'app')
+            ->addSelect('app')
+            ->leftJoin('a.advert_skills', 'ads')
+            ->addSelect('ads')
+            ->leftJoin('ads.skill', 'adss')
+            ->addSelect('adss')
+            ->where('a.id = :id')
             ->setParameter('id', $id);
+        return $query
+                    ->getQuery()
+                    ->getSingleResult();
+    }
+
+    public function _getAdvertBeforeDate($days)
+    {
+        $qb = $this
+            ->createQueryBuilder('a')
+            ->where('a.date < :year')
+            ->andWhere('a.nbApplication = 0')
+            ->setParameter('year', $days)
+        ;
 
         return $qb
             ->getQuery()
-            ->getSingleResult();
+            ->getResult()
+            ;
     }
 }

@@ -28,36 +28,36 @@
             <div class="col-md-5">
                 <h4>{{ advert.title }}</h4>
                 <i>Par {{ advert.author }}, le {{ advert.date|date('d/m/Y') }}</i>
-            </div>
-            <div class="col-md-3">
-                <h4>Compétences :</h4>
-                <ul>
-                    {% for skill in listAdvertSkills %}
-                        <li>
-                           {{ skill.skill.name }} : {{ skill.level }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <p>
-                    {{ advert.content }}
-                </p>
-            </div>
-            <div class="col-md-12">
-                <h3>Les candidatures :</h3>
-                <div class="row">
-                    {% for application in listApplications %}
-                        <div class="col-md-6">
-                            <h4>{{ application.author }}</h4>
-                            <p>{{ application.content }}</p>
-                            <p>le <em>{{ application.date|date('d/m/Y') }}</em></p>
-                        </div>
-                    {% endfor %}
+                </div>
+                  <div class="col-md-3">
+                      <h4>Compétences :</h4>
+                      <ul>
+                          {% for skill in advert.advertSkills %}
+                              <li>
+                                 {{ skill.skill.name }} : {{ skill.level }}
+                              </li>
+                          {% endfor %}
+                      </ul>
                 </div>
             </div>
+             <div class="row">
+                  <div class="col-md-12">
+                      <p>
+                          {{ advert.content }}
+                      </p>
+                  </div>
+                  <div class="col-md-12">
+                      <h3>Les candidatures :</h3>
+                      <div class="row">
+                          {% for application in advert.applications %}
+                              <div class="col-md-6">
+                                  <h4>{{ application.author }}</h4>
+                                  <p>{{ application.content }}</p>
+                                  <p>le <em>{{ application.date|date('d/m/Y') }}</em></p>
+                              </div>
+                          {% endfor %}
+                      </div>
+                  </div>
        </div>
         <p>
             <a href="{{ path('da_platform_home') }}" class="btn btn-default">

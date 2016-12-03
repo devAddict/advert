@@ -32,7 +32,7 @@ class ApplicationCreationListener
 
             $this->applicationMailer->sendNewNotification($entity);
         } catch (Swift_RfcComplianceException $e) {
-            throw new Swift_RfcComplianceException('une de mail');
+            throw new Swift_RfcComplianceException('mail');
         }
     }
 }

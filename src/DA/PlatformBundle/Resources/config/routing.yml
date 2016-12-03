@@ -33,3 +33,11 @@ da_platform_add:
     path:      /add
     defaults:
         _controller: DAPlatformBundle:Advert:add
+
+da_platform_purge:
+    path:      /purge/{days}
+    defaults:
+        _controller: DAPlatformBundle:Advert:purge
+    requirements:
+            days: \d+
+

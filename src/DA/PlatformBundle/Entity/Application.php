@@ -33,6 +33,7 @@ class Application
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $email;
 
@@ -40,7 +41,6 @@ class Application
      * @var string
      *
      * @ORM\Column(name="content", type="text")
-     * @ORM\JoinColumn(nullable=true)
      */
     private $content;
 

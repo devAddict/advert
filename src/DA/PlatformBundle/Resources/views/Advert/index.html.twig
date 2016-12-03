@@ -11,9 +11,13 @@
                 </a>
                 par {{ advert.author }}
                 le {{ advert.date|date('d/m/Y') }}
+                <img style="width: 30px;height: auto;padding-bottom: 5px" src="{{ advert.image.url }}" alt="">
             </li>
         {% else %}
             <li>Pas (encore !) d'annonce</li>
         {% endfor %}
     </ul>
+    <div class="text-center">
+        {{ knp_pagination_render(listAdverts) }}
+    </div>
 {% endblock %}

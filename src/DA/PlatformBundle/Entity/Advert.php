@@ -34,9 +34,9 @@ class Advert
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="update_at", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
      */
-    private $updateAt;
+    private $updatedAt;
 
     /**
      * @var string
@@ -68,6 +68,7 @@ class Advert
 
     /**
      * @ORM\OneToOne(targetEntity="DA\PlatformBundle\Entity\Image", cascade={"persist"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $image;
 
@@ -77,14 +78,19 @@ class Advert
     private $categories;
 
     /**
-     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\Application", mappedBy="advert")
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\Application", mappedBy="advert", cascade={"remove"})
      */
     private $applications;
 
     /**
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"remove"})
+     */
+    private $advert_skills;
+
+    /**
      * @ORM\Column(name="nb_applications", type="integer")
      */
-    private $nbApplication;
+    private $nbApplication = 0;
 
     /**
      * @Gedmo\Slug(fields={"title"})
@@ -92,17 +98,24 @@ class Advert
      */
     private $slug;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=255)
+     * @ORM\JoinColumn(nullable=true)
+     */
+    private $email;
 
     public function increaseApplication()
     {
         $this->nbApplication++;
     }
-    
+
     public function decreaseApplication()
     {
         $this->nbApplication--;
     }
-    
+
     /**
      * Advert constructor.
      */
@@ -111,6 +124,7 @@ class Advert
         $this->date = new \DateTime();
         $this->categories = new ArrayCollection();
         $this->applications = new ArrayCollection();
+        $this->advert_skills = new ArrayCollection();
     }
 
     /**
@@ -119,7 +133,7 @@ class Advert
      */
     public function updateDate()
     {
-        $this->setUpdateAt(new \DateTime());
+        $this->setUpdatedAt(new \DateTime());
     }
 
 
@@ -339,8 +353,80 @@ class Advert
         return $this->applications;
     }
 
-    
 
+    /**
+     * Set updateAt
+     *
+     * @param \DateTime $updatedAt
+     *
+     * @return Advert
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * Get updateAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set nbApplication
+     *
+     * @param integer $nbApplication
+     *
+     * @return Advert
+     */
+    public function setNbApplication($nbApplication)
+    {
+        $this->nbApplication = $nbApplication;
+
+        return $this;
+    }
+
+    /**
+     * Get nbApplication
+     *
+     * @return integer
+     */
+    public function getNbApplication()
+    {
+        return $this->nbApplication;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     *
+     * @return Advert
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    
     /**
      * Add advertSkill
      *
@@ -376,26 +462,26 @@ class Advert
     }
 
     /**
-     * Set updateAt
+     * Set email
      *
-     * @param \DateTime $updateAt
+     * @param string $email
      *
      * @return Advert
      */
-    public function setUpdateAt($updateAt)
+    public function setEmail($email)
     {
-        $this->updateAt = $updateAt;
+        $this->email = $email;
 
         return $this;
     }
 
     /**
-     * Get updateAt
+     * Get email
      *
-     * @return \DateTime
+     * @return string
      */
-    public function getUpdateAt()
+    public function getEmail()
     {
-        return $this->updateAt;
+        return $this->email;
     }
 }

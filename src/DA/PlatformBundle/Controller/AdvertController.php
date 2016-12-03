@@ -15,26 +15,34 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AdvertController extends Controller
 {
-    public function indexAction($page)
+    public function indexAction($page, Request $request)
     {
-        if ($page < 1) {
-            throw new NotFoundHttpException('La page "' . $page . '" inexistante.');
+       if ($page < 1) {
+            throw new NotFoundHttpException('La page "' . $page . '" n\'existe pas.');
         }
 
-        $repository = $this
-            ->getDoctrine()
-            ->getManager()
-            ->getRepository('DAPlatformBundle:Advert');
-        $listAdverts = $repository->_findAll();
-
+        $nbPerPage = 3;
+        $em = $this->getDoctrine()->getManager();
+        $paginator = $this->get('Knp_paginator');
+        $listAdverts = $em->getRepository('DAPlatformBundle:Advert')->_getAvertAll($paginator, $page, $nbPerPage);
+        
         return $this->render('DAPlatformBundle:Advert:index.html.twig', array(
-            'listAdverts' => $listAdverts
+            'listAdverts' => $listAdverts,
         ));
     }
 
     public function viewAction($id, Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $advert = $em->getRepository('DAPlatformBundle:Advert')->_getAvert($id);
+        
+        return $this->render('DAPlatformBundle:Advert:view.html.twig', array(
+            'advert' => $advert
+        ));
+    }
 
+    public function deleteAction($id)
+    {
         $em = $this->getDoctrine()->getManager();
         $advert = $em->getRepository('DAPlatformBundle:Advert')->find($id);
 
@@ -42,72 +50,19 @@ class AdvertController extends Controller
             throw new NotFoundHttpException('L\'annonce avec d\'id "' . $id . '" n\existe pas.');
         }
 
-        $listApplications = $em
-            ->getRepository('DAPlatformBundle:Application')
-            ->findBy(array('advert' => $advert));
+        foreach ($advert as $category) {
+            $advert->removeCategory($category);
+        }
 
-        $listAdvertSkills = $em
-            ->getRepository('DAPlatformBundle:AdvertSkill')
-            ->findBy(array('advert' => $advert));
-
-        return $this->render('DAPlatformBundle:Advert:view.html.twig', array(
-            'advert' => $advert,
-            'listApplications' => $listApplications,
-            'listAdvertSkills' => $listAdvertSkills,
-        ));
+        $em->persist($advert);
+        $em->flush();
     }
 
     public function addAction(Request $request)
     {
 
         $em = $this->getDoctrine()->getManager();
-
-        $advert = new Advert();
-        $advert->setTitle('Recherche développeur php');
-        $advert->setAuthor('Décilap');
-        $advert->setContent('Nous recherchons un développeur symfony débutant');
-
-        $image = new Image();
-        $image->setUrl("http://www.adiph.org/images/deposer_votre_annonce.png");
-        $image->setAlt("votre annonce");
-
-        $advert->setImage($image);
-
-        $application1 = new Application();
-        $application1->setAuthor('Denis');
-        $application1->setContent('Je suis motivé et dynamique');
-
-        $application2 = new Application();
-        $application2->setAuthor('Christelle');
-        $application2->setContent('Je suis motivé et dynamique et tres sociable');
-
-        $listSkills = $em->getRepository('DAPlatformBundle:Skill')->findAll();
-
-        foreach ($listSkills as $skill) {
-            $adverSkill = new AdvertSkill();
-            $adverSkill->setAdvert($advert);
-            $adverSkill->setSkill($skill);
-
-            $adverSkill->setLevel('expert');
-
-            $em->persist($adverSkill);
-        }
-        $skill = new Skill();
-        $skill2 = new Skill();
-
-        $skill->setName('php');
-        $skill2->setName('javascript');
-
-        $application1->setAdvert($advert);
-        $application2->setAdvert($advert);
-
-        $em->persist($advert);
-
-        $em->persist($application1);
-        $em->persist($application2);
-
-        $em->flush();
-
+        
         if ($request->isMethod('POST')) {
             $request->getSession()->getFlashbag()->add('notice', 'Annonce bien enregistrée');
 
@@ -116,28 +71,16 @@ class AdvertController extends Controller
         return $this->render('DAPlatformBundle:Advert:add.html.twig');
     }
 
-    public function deleteAction()
-    {
-        return $this->render('DAPlatformBundle:Advert:delete.html.twig');
-    }
 
     public function editAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-
         $advert = $em->getRepository('DAPlatformBundle:Advert')->find($id);
 
         if ($advert === null) {
             throw new NotFoundHttpException('L\'annonce avec d\'id "' . $id . '" n\existe pas.');
         }
         
-        $listCategories = $em->getRepository('DAPlatformBundle:Category')->findAll();
-
-        foreach ($listCategories as $category) {
-            $advert->addCategory($category);
-        }
-
-        $em->flush();
         if ($request->isMethod('POST')) {
             $request->getSession()->getFlashbag()->add('notice', 'Annonce bien modifiée');
 
@@ -145,26 +88,40 @@ class AdvertController extends Controller
         }
 
         return $this->render('DAPlatformBundle:Advert:edit.html.twig', array(
-            'advert'=>$advert,
-            'listCategories'=>$listCategories,
+            'advert'=>$advert
         ));
     }
 
     public function menuAction($limit)
     {
-        // On fixe en dur une liste ici, bien entendu par la suite
-        // on la récupérera depuis la BDD !
-        $listAdverts = array(
-            array('id' => 2, 'title' => 'Recherche développeur Symfony'),
-            array('id' => 5, 'title' => 'Mission de webmaster'),
-            array('id' => 9, 'title' => 'Offre de stage webdesigner')
+        $repository = $this
+            ->getDoctrine()
+            ->getManager()
+            ->getRepository('DAPlatformBundle:Advert');
+
+        $listAdverts = $repository->findBy(
+            array(),
+            array('date' => 'desc'),
+            $limit,
+            0
         );
 
         return $this->render('DAPlatformBundle:Advert:menu.html.twig', array(
-            // Tout l'intérêt est ici : le contrôleur passe
-            // les variables nécessaires au template !
             'listAdverts' => $listAdverts
         ));
+    }
+
+    public function purgeAction($days, Request $request)
+    {
+        $purge = $this->get('da_platform.purger.advert')->purge($days);
+
+        if ($purge > 0) {
+            $request->getSession()->getFlashbag()->add('notice', array('info'=>'Nombre d\'annonce supprimée: ' . $purge));
+        }else{
+            $request->getSession()->getFlashbag()->add('notice', array('info'=>'Aucune annonce a supprimée'));
+        }
+
+     return $this->redirectToRoute('da_platform_home');
     }
 
 }

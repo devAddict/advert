@@ -10,8 +10,22 @@ services:
         class: DA\PlatformBundle\Email\ApplicationMailer
         arguments: ["@mailer"]
 
+    da_platform.email.advert_delete_mailer:
+        class: DA\PlatformBundle\Email\AdvertDeleteMailer
+        arguments: ["@mailer"]
+
     da_platform.doctrine_listener.application_creation:
         class: DA\PlatformBundle\DoctrineListener\ApplicationCreationListener
         arguments: ["@da_platform.email.application_mailer"]
         tags:
             - {name: doctrine.event_listener, event: postPersist}
+
+    da_platform.doctrine_listener.advert_creation:
+        class: DA\PlatformBundle\DoctrineListener\AdvertCreationListener
+        arguments: ["@da_platform.email.advert_delete_mailer"]
+        tags:
+            - {name: doctrine.event_listener, event: postRemove}
+
+    da_platform.purger.advert:
+        class: DA\PlatformBundle\Purger\Advert
+        arguments: ["@doctrine.orm.entity_manager"]
