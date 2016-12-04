@@ -39,6 +39,6 @@ class CoreController extends Controller
     public function contactAction(Request $request)
     {
         $request->getSession()->getFlashbag()->add('notice', array('info'=>'La page de contact n’est pas encore disponible'));
-        return $this->redirectToRoute('da_core_homepage');
+        return $this->redirectToRoute('da_core_index');
     }
 }

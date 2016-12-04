@@ -3,15 +3,13 @@
 namespace DA\PlatformBundle\Controller;
 
 use DA\PlatformBundle\Entity\Advert;
-use DA\PlatformBundle\Entity\AdvertSkill;
-use DA\PlatformBundle\Entity\Application;
-use DA\PlatformBundle\Entity\Image;
-use DA\PlatformBundle\Entity\Skill;
+use DA\PlatformBundle\Form\AdvertEditType;
+use DA\PlatformBundle\Form\AdvertType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class AdvertController extends Controller
 {
@@ -41,7 +39,7 @@ class AdvertController extends Controller
         ));
     }
 
-    public function deleteAction($id)
+    public function deleteAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $advert = $em->getRepository('DAPlatformBundle:Advert')->find($id);
@@ -50,45 +48,72 @@ class AdvertController extends Controller
             throw new NotFoundHttpException('L\'annonce avec d\'id "' . $id . '" n\existe pas.');
         }
 
-        foreach ($advert as $category) {
-            $advert->removeCategory($category);
+        // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+        // Cela permet de protéger la suppression d'annonce contre cette faille
+        $form = $this->get('form.factory')->create();
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em->remove($advert);
+            $em->flush();
+
+            $request->getSession()->getFlashbag()->add('notice', 'L\'annonce a bien été supprimée.');
+
+            return $this->redirectToRoute('da_platform_index');
         }
 
-        $em->persist($advert);
-        $em->flush();
+        return $this->render('DAPlatformBundle:Advert:delete.html.twig', array(
+            'advert' => $advert,
+            'form'   => $form->createView(),
+        ));
     }
 
+    /**
+     * @Security("has_role('ROLE_AUTEUR')")
+     */
     public function addAction(Request $request)
     {
+        $advert = new Advert();
+        $advert->setDate(new \DateTime());
+        $form = $this->createForm(AdvertType::class, $advert);
 
-        $em = $this->getDoctrine()->getManager();
-        
-        if ($request->isMethod('POST')) {
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($advert);
+            $em->flush();
+
             $request->getSession()->getFlashbag()->add('notice', 'Annonce bien enregistrée');
 
-            return $this->redirectToRoute('da_platform_view', array('id' => 5));
+            return $this->redirectToRoute('da_platform_view', array('id' => $advert->getId()));
         }
-        return $this->render('DAPlatformBundle:Advert:add.html.twig');
+        return $this->render('DAPlatformBundle:Advert:add.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 
 
     public function editAction($id, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+
         $advert = $em->getRepository('DAPlatformBundle:Advert')->find($id);
 
         if ($advert === null) {
             throw new NotFoundHttpException('L\'annonce avec d\'id "' . $id . '" n\existe pas.');
         }
-        
-        if ($request->isMethod('POST')) {
+
+        $form = $this->createForm(AdvertEditType::class, $advert);
+
+        if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($advert);
+            $em->flush();
             $request->getSession()->getFlashbag()->add('notice', 'Annonce bien modifiée');
 
-            return $this->redirectToRoute('da_platform_view', array('id' => 5));
+            return $this->redirectToRoute('da_platform_view', array('id' => $advert->getId()));
         }
-
         return $this->render('DAPlatformBundle:Advert:edit.html.twig', array(
-            'advert'=>$advert
+            'advert' => $advert,
+            'form' => $form->createView()
         ));
     }
 
@@ -118,10 +143,10 @@ class AdvertController extends Controller
         if ($purge > 0) {
             $request->getSession()->getFlashbag()->add('notice', array('info'=>'Nombre d\'annonce supprimée: ' . $purge));
         }else{
-            $request->getSession()->getFlashbag()->add('notice', array('info'=>'Aucune annonce a supprimée'));
+            $request->getSession()->getFlashbag()->add('notice', array('info'=>'Aucune annonce à supprimée'));
         }
 
-     return $this->redirectToRoute('da_platform_home');
+     return $this->redirectToRoute('da_platform_index');
     }
 
 }

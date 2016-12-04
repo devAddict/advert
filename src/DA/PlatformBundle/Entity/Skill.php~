@@ -29,9 +29,10 @@ class Skill
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="skill")
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"remove"})
      */
     private $advert_skills;
+    
     /**
      * Get id
      *

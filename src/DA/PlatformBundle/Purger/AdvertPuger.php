@@ -12,7 +12,7 @@ namespace DA\PlatformBundle\Purger;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Validator\Constraints\Date;
 
-class Advert
+class AdvertPuger
 {
     private $em;
     private $repository;
@@ -34,6 +34,10 @@ class Advert
 
         foreach ($advertEmpty as $advert) {
             $applications = $advert->getApplications();
+            
+            /**
+             * arrayCollection isEmpty() relation
+             */
             if ($applications->isEmpty()) {
                 $this->em->remove($advert);
                 $this->em->flush();
@@ -42,4 +46,6 @@ class Advert
         }
         return $count;
     }
+
+    	
 }

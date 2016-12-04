@@ -23,4 +23,9 @@ class ApplicationRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function isFlood($ip, $int)
+    {
+        
+    }
 }

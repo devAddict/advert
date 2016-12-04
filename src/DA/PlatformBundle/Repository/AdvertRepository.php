@@ -58,16 +58,13 @@ class AdvertRepository extends \Doctrine\ORM\EntityRepository
 
     public function _getAdvertBeforeDate($days)
     {
-        $qb = $this
-            ->createQueryBuilder('a')
-            ->where('a.date < :year')
-            ->andWhere('a.nbApplication = 0')
-            ->setParameter('year', $days)
-        ;
-
-        return $qb
+        return	$this->createQueryBuilder('a')
+            ->where('a.updatedAt <=	:date')
+            ->orWhere('a.updatedAt IS	NULL AND a.date	<=	:date')
+            ->andWhere('a.applications	IS	EMPTY')
+            ->setParameter('date',	$days)
             ->getQuery()
             ->getResult()
-            ;
+        ;
     }
 }

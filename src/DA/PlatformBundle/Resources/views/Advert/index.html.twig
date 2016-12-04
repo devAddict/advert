@@ -11,7 +11,7 @@
                 </a>
                 par {{ advert.author }}
                 le {{ advert.date|date('d/m/Y') }}
-                <img style="width: 30px;height: auto;padding-bottom: 5px" src="{{ advert.image.url }}" alt="">
+                <a href="{{ path('da_platform_delete', {'id': advert.id}) }}"><i class="fa fa-trash text-danger"></i></a>
             </li>
         {% else %}
             <li>Pas (encore !) d'annonce</li>

@@ -27,5 +27,13 @@ services:
             - {name: doctrine.event_listener, event: postRemove}
 
     da_platform.purger.advert:
-        class: DA\PlatformBundle\Purger\Advert
+        class: DA\PlatformBundle\Purger\AdvertPuger
         arguments: ["@doctrine.orm.entity_manager"]
+
+    # src/OC/PlatformBundle/Resources/config/services.yml
+
+    da_platform.validator.antiflood:
+        class: DA\PlatformBundle\Validator\AntifloodValidator
+        arguments: ["@request_stack", "@doctrine.orm.entity_manager"]
+        tags:
+            - { name: validator.constraint_validator, alias: oc_platform_antiflood }

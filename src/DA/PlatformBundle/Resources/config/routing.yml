@@ -1,6 +1,6 @@
 # src/OC/PlatformBundle/Resources/config/routing.yml
 
-da_platform_home:
+da_platform_index:
     path:      /{page}
     defaults:
         _controller: DAPlatformBundle:Advert:index
@@ -23,7 +23,7 @@ da_platform_edit:
         id: \d+
 
 da_platform_delete:
-    path:      /edit/{id}
+    path:      /delete/{id}
     defaults:
        _controller: DAPlatformBundle:Advert:delete
     requirements:

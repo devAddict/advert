@@ -22,7 +22,7 @@
         <div class="row">
             {% if advert.image is not null %}
                 <div class="col-md-4">
-                    <img class="img-responsive" src="{{ advert.image.url }}" alt="{{ advert.image.url }}">
+                    <img class="img-responsive" src="{{ asset(advert.image.webpath) }}" alt="{{ advert.image.alt }}">
                 </div>
             {% endif %}
             <div class="col-md-5">
@@ -60,7 +60,7 @@
                   </div>
        </div>
         <p>
-            <a href="{{ path('da_platform_home') }}" class="btn btn-default">
+            <a href="{{ path('da_platform_index') }}" class="btn btn-default">
                 <i class="glyphicon glyphicon-chevron-left"></i>
                 Retour à la liste
             </a>

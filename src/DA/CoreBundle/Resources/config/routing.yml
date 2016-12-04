@@ -1,4 +1,4 @@
-da_core_homepage:
+da_core_index:
     path:     /
     defaults: { _controller: DACoreBundle:Core:index }
 

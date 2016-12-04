@@ -67,7 +67,8 @@ class Advert
     private $published = true;
 
     /**
-     * @ORM\OneToOne(targetEntity="DA\PlatformBundle\Entity\Image", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="DA\PlatformBundle\Entity\Image", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=true)
      */
     private $image;
 
@@ -77,19 +78,24 @@ class Advert
     private $categories;
 
     /**
-     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\Application", mappedBy="advert")
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\Application", mappedBy="advert", cascade={"remove"})
      */
     private $applications;
 
     /**
-     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="advert")
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"remove"})
      */
     private $advert_skills;
 
     /**
+     * @ORM\OneToMany(targetEntity="DA\PlatformBundle\Entity\AdvertSkill", mappedBy="advert", cascade={"remove"})
+     */
+    private $skills;
+
+    /**
      * @ORM\Column(name="nb_applications", type="integer")
      */
-    private $nbApplication;
+    private $nbApplication = 0;
 
     /**
      * @Gedmo\Slug(fields={"title"})
@@ -134,15 +140,7 @@ class Advert
     {
         $this->setUpdatedAt(new \DateTime());
     }
-
-
-    /**
-     * @param boolean $published
-     */
-    public function setPublished($published)
-    {
-        $this->published = $published;
-    }
+    
 
     /**
      * Get id
@@ -250,16 +248,7 @@ class Advert
         return $this->content;
     }
 
-    /**
-     * Get published
-     *
-     * @return boolean
-     */
-    public function getPublished()
-    {
-        return $this->published;
-    }
-
+   
     /**
      * Set image
      *
@@ -458,5 +447,87 @@ class Advert
     public function getAdvertSkills()
     {
         return $this->advert_skills;
+    }
+
+    /**
+     * Set email
+     *
+     * @param string $email
+     *
+     * @return Advert
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * Get email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Set published
+     *
+     * @param boolean $published
+     *
+     * @return Advert
+     */
+    public function setPublished($published)
+    {
+        $this->published = $published;
+
+        return $this;
+    }
+
+    /**
+     * Get published
+     *
+     * @return boolean
+     */
+    public function getPublished()
+    {
+        return $this->published;
+    }
+
+    /**
+     * Add skill
+     *
+     * @param \DA\PlatformBundle\Entity\AdvertSkill $skill
+     *
+     * @return Advert
+     */
+    public function addSkill(\DA\PlatformBundle\Entity\AdvertSkill $skill)
+    {
+        $this->skills[] = $skill;
+
+        return $this;
+    }
+
+    /**
+     * Remove skill
+     *
+     * @param \DA\PlatformBundle\Entity\AdvertSkill $skill
+     */
+    public function removeSkill(\DA\PlatformBundle\Entity\AdvertSkill $skill)
+    {
+        $this->skills->removeElement($skill);
+    }
+
+    /**
+     * Get skills
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSkills()
+    {
+        return $this->skills;
     }
 }
