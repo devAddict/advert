@@ -6,6 +6,10 @@ da_platform:
     resource: "@DAPlatformBundle/Resources/config/routing.yml"
     prefix:   /platform
 
+user_registration:
+    path:     /register
+    defaults: { _controller: DAUserBundle:Registration:register }
+
 login:
     path: /login
     defaults:

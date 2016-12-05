@@ -1,6 +1,4 @@
 <?php
-// src/DA/UserBundle/Controller/SecurityController.php;
-
 namespace DA\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;

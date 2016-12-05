@@ -4,10 +4,8 @@ namespace DA\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Security\Core\User\UserInterface;
-
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity
@@ -51,11 +49,22 @@ class User implements UserInterface
     private $password;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(name="roles", type="array")
      */
-    private $roles;
+    private $roles = array();
 
-    // other properties and methods
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
 
     public function getEmail()
     {
@@ -104,7 +113,12 @@ class User implements UserInterface
         return null;
     }
 
-    // other methods, including security methods like getRoles()
+    
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
     /**
      * Returns the roles granted to the user.
      *
@@ -127,13 +141,16 @@ class User implements UserInterface
     }
 
     /**
-     * Removes sensitive data from the user.
+     * Set roles
      *
-     * This is important if, at any given point, sensitive information like
-     * the plain-text password is stored on this object.
+     * @param array $roles
+     *
+     * @return User
      */
-    public function eraseCredentials()
+    public function setRoles($roles)
     {
-        // TODO: Implement eraseCredentials() method.
+        $this->roles = $roles;
+
+        return $this;
     }
 }
