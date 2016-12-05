@@ -1,3 +1,6 @@
+da_user:
+    resource: "@DAUserBundle/Resources/config/routing.yml"
+
 da_core:
     resource: "@DACoreBundle/Resources/config/routing.yml"
     prefix:   /
@@ -6,17 +9,13 @@ da_platform:
     resource: "@DAPlatformBundle/Resources/config/routing.yml"
     prefix:   /platform
 
-user_registration:
-    path:     /register
-    defaults: { _controller: DAUserBundle:Registration:register }
-
-login:
-    path: /login
-    defaults:
-        _controller: DAUserBundle:Security:login
-
-login_check:
-    path: /login_check
-
-logout:
-    path: /logout
+#login:
+#    path: /login
+#    defaults:
+#        _controller: DAUserBundle:Security:login
+#
+#login_check:
+#    path: /login_check
+#
+#logout:
+#    path: /logout
