@@ -1,6 +1,3 @@
-da_user:
-    resource: "@DAUserBundle/Resources/config/routing.yml"
-
 da_core:
     resource: "@DACoreBundle/Resources/config/routing.yml"
     prefix:   /
@@ -8,6 +5,11 @@ da_core:
 da_platform:
     resource: "@DAPlatformBundle/Resources/config/routing.yml"
     prefix:   /platform
+
+da_user:
+    resource: "@DAUserBundle/Resources/config/routing.yml"
+
+
 
 #login:
 #    path: /login

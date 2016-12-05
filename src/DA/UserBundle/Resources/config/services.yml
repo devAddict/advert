@@ -1,4 +1,8 @@
 services:
-#    da_user.example:
-#        class: DA\UserBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    your.user_login_route_listener:
+        class: DA\UserBundle\Event\UserLoginRouteListener
+        arguments:
+            - "@security.token_storage"
+            - "@router"
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
